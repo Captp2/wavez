@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\User;
 use common\traits\ControllerUtilTrait;
+use Masih\YoutubeDownloader\YoutubeDownloader;
 use yii\web\Controller;
 
 class UserController extends Controller
