@@ -36,7 +36,7 @@ AppAsset::register($this);
     try {
         echo SideNav::widget([
             'type' => SideNav::TYPE_PRIMARY,
-            'heading' => 'Options',
+            'heading' => 'Wavez',
             'items' => [
                 [
                     'url' => '/wavez',
