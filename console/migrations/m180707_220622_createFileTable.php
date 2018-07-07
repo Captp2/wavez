@@ -17,7 +17,7 @@ class m180707_220622_createFileTable extends Migration
             'file_name' => $this->string(255),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            'public_name' => $this->string(255)
+            'file_path' => $this->string(255)
         ]);
     }
 

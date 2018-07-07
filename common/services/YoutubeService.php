@@ -2,8 +2,10 @@
 
 namespace common\services;
 
+use common\models\File;
 use Madcoda\Youtube\Youtube;
 use Masih\YoutubeDownloader\YoutubeDownloader;
+use Ramsey\Uuid\Uuid;
 use yii\base\Component;
 
 class YoutubeService extends Component
@@ -32,18 +34,31 @@ class YoutubeService extends Component
      * @return string
      * @throws \Exception
      */
-    public function download(string $videoId): string
+    public function download(string $videoId): array
     {
         $videoInfo = $this->getArray($this->youtubeApi->getVideoInfo($videoId));
-        $filePath = $this->getLocalFile($videoInfo['snippet']['title']);
+        var_dump($videoInfo);
+        exit;
+        $fileName = $this->getFileName($videoInfo['snippet']['title']);
 
-        if (!file_exists($filePath)) {
+        if (!$file = File::fileName($fileName)->one()) {
+            $file = new File();
+            $file->file_name = $fileName;
+            $filePath = Uuid::uuid1();
+            $file->file_path = $this->getFilePath($filePath);
+
             $youtubeDownloader = new YoutubeDownloader($videoId);
+            $youtubeDownloader->sanitizeFileName = function ($fileName) use ($youtubeDownloader, $filePath) {
+                return $filePath;
+            };
+
             $youtubeDownloader->setPath($this->filePath);
             $youtubeDownloader->download();
+
+            $file->save();
         }
 
-        return $filePath;
+        return ['fileName' => $file->file_name, 'filePath' => $file->file_path];
     }
 
     public function getArray($stdClass)
@@ -55,10 +70,13 @@ class YoutubeService extends Component
      * @param $title
      * @return string
      */
-    public function getLocalFile(string $title): string
+    public function getFileName(string $title): string
     {
-        $title = str_replace(' ', '_', $title);
-        $title = addslashes($title);
-        return \Yii::getAlias('@files') . '/' . $title . '.webm';
+        return str_replace(' ', '_', $title);
+    }
+
+    public function getFilePath(string $path): string
+    {
+        return \Yii::getAlias('@files') . '/' . $path . '.webm';
     }
 }

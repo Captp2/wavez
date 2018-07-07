@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\services\YoutubeService;
+use Faker\Provider\Uuid;
 use yii\base\InvalidArgumentException;
 use yii\web\Controller;
 
@@ -35,7 +36,8 @@ class YoutubeController extends Controller
         }
 
         $youtubeService = new YoutubeService();
+        $file = $youtubeService->download($videoId);
 
-        \Yii::$app->response->sendFile($youtubeService->download($videoId));
+        \Yii::$app->response->sendFile($file['filePath'], $file['fileName']);
     }
 }
