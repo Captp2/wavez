@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use app\models\Playlist;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -133,6 +134,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getAuthKey()
     {
         return $this->auth_key;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlaylists()
+    {
+        return $this->hasMany(Playlist::className(), ['user_id' => 'id']);
     }
 
     /**

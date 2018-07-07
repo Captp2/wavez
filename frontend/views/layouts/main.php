@@ -44,10 +44,19 @@ AppAsset::register($this);
                     'icon' => 'home'
                 ],
                 [
-                    'label' => Yii::$app->user->identity->username,
+                    'label' => Yii::$app->user->identity->username ?? 'Guest',
                     'icon' => 'user',
                     'items' => [
-                        ['label' => 'Profil', 'url' => Url::to(['user/view', 'id' => Yii::$app->user->id])],
+                        [
+                            'label' => 'Profil',
+                            'url' => Url::to(['user/view', 'id' => Yii::$app->user->id]),
+                            'visible' => !Yii::$app->user->isGuest
+                        ],
+                        [
+                            'label' => 'Login',
+                            'url' => Url::to(['login']),
+                            'visible' => Yii::$app->user->isGuest
+                        ],
                     ],
                 ],
                 [
@@ -55,7 +64,7 @@ AppAsset::register($this);
                     'icon' => 'headphones',
                     'items' => [
                         ['label' => 'Search', 'icon' => 'search', 'url' => Url::to(['music/search'])],
-                        ['label' => 'Playlists', 'icon' => 'bookmark', 'url' => Url::to(['playlist'])],
+                        ['label' => 'Playlists', 'icon' => 'bookmark', 'url' => Url::to(['playlist/index'])],
                     ]
                 ]
             ],
