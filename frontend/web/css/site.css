@@ -118,3 +118,23 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.youtube-video-container{
+    border: 1px solid darkgrey;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 10px;
+    min-height: 300px;
+    width: 46%;
+    margin: 2%;
+    float: left;
+}
+
+.youtube-video-title{
+    text-align: center;
+}
+
+.youtube-video-thumbnail{
+    margin-left: 20%;
+}

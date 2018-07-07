@@ -63,7 +63,7 @@ AppAsset::register($this);
                     'label' => 'Wavez',
                     'icon' => 'headphones',
                     'items' => [
-                        ['label' => 'Search', 'icon' => 'search', 'url' => Url::to(['music/search'])],
+                        ['label' => 'Search', 'icon' => 'search', 'url' => Url::to(['youtube/search'])],
                         ['label' => 'Playlists', 'icon' => 'bookmark', 'url' => Url::to(['playlist/index'])],
                     ]
                 ]
