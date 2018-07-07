@@ -4,6 +4,7 @@
 
 /* @var $content string */
 
+use kartik\sidenav\SideNav;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -29,32 +30,42 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
+
     <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $menuItems[] = '<li>' .
-            Html::a(Yii::$app->user->identity->getUserName(), Url::to(['user/view', 'id' => Yii::$app->user->id]))
-            . '</li>';
+    echo Html::beginTag('div', ['class' => 'col-sm-3 sidebar']);
+    try {
+        echo SideNav::widget([
+            'type' => SideNav::TYPE_PRIMARY,
+            'heading' => 'Options',
+            'items' => [
+                [
+                    'url' => '/wavez',
+                    'label' => 'Home',
+                    'icon' => 'home'
+                ],
+                [
+                    'label' => Yii::$app->user->identity->username,
+                    'icon' => 'user',
+                    'items' => [
+                        ['label' => 'Profil', 'url' => Url::to(['user/view', 'id' => Yii::$app->user->id])],
+                    ],
+                ],
+                [
+                    'label' => 'Wavez',
+                    'icon' => 'headphones',
+                    'items' => [
+                        ['label' => 'Search', 'icon' => 'search', 'url' => Url::to(['music/search'])],
+                        ['label' => 'Playlists', 'icon' => 'bookmark', 'url' => Url::to(['playlist'])],
+                    ]
+                ]
+            ],
+            'containerOptions' => ['style' => 'height:100vh;position:absolute;width:20em;margin-left:0;border-radius:0;border:0;left:0;'],
+            'headingOptions' => ['style' => 'border-radius:0'],
+        ]);
+    } catch (Exception $e) {
+        Yii::error($e->getMessage());
     }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
+    echo Html::endTag('div');
     ?>
 
     <div class="container">

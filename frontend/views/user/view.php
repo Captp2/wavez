@@ -5,11 +5,22 @@
  * @var $model \common\models\User
  */
 
-use yii\helpers\Html;
+use common\components\PageHeader;
+use yii\helpers\Url;
 
 $this->title = $model->username;
 
-echo Html::tag('h1', $this->title);
+try {
+    echo PageHeader::widget([
+        'title' => $this->title,
+        'buttons' => [
+            [
+                'label' => 'Update',
+                'options' => ['href' => Url::to(['user/update', 'id' => $model->id]), 'class' => 'btn btn-blue'],
+            ],
+        ]]);
+} catch (Exception $e) {
+}
 
 try {
     echo \yii\widgets\DetailView::widget([
