@@ -38,6 +38,6 @@ class YoutubeController extends Controller
         $youtubeService = new YoutubeService();
         $file = $youtubeService->download($videoId);
 
-        \Yii::$app->response->sendFile($file['filePath'], $file['fileName']);
+        \Yii::$app->response->sendFile(\Yii::getAlias('@files') . '/'.$file['filePath'], $file['fileName']);
     }
 }

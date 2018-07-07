@@ -5,6 +5,7 @@ namespace common\services;
 use common\models\File;
 use Madcoda\Youtube\Youtube;
 use Masih\YoutubeDownloader\YoutubeDownloader;
+use Masih\YoutubeDownloader\YoutubeException;
 use Ramsey\Uuid\Uuid;
 use yii\base\Component;
 
@@ -14,6 +15,8 @@ class YoutubeService extends Component
     public $youtubeApi;
     /** @var string */
     public $filePath;
+    /** @var File */
+    public $activeFile;
 
     /**
      * @throws \Exception
@@ -37,28 +40,37 @@ class YoutubeService extends Component
     public function download(string $videoId): array
     {
         $videoInfo = $this->getArray($this->youtubeApi->getVideoInfo($videoId));
-        var_dump($videoInfo);
-        exit;
         $fileName = $this->getFileName($videoInfo['snippet']['title']);
 
-        if (!$file = File::fileName($fileName)->one()) {
-            $file = new File();
-            $file->file_name = $fileName;
+        if (!$this->activeFile = File::fileName($fileName)->one()) {
+            $this->activeFile = new File();
+            $this->activeFile->file_name = $fileName;
             $filePath = Uuid::uuid1();
-            $file->file_path = $this->getFilePath($filePath);
 
             $youtubeDownloader = new YoutubeDownloader($videoId);
             $youtubeDownloader->sanitizeFileName = function ($fileName) use ($youtubeDownloader, $filePath) {
                 return $filePath;
             };
 
-            $youtubeDownloader->setPath($this->filePath);
-            $youtubeDownloader->download();
+            $youtubeDownloader->onFinalized = function ($fileName, $fileSize, $index, $count) use ($filePath) {
+                $explode = explode('.', $fileName);
+                $this->activeFile->file_path .= $filePath . '.' . end($explode);
+            };
 
-            $file->save();
+
+            $youtubeDownloader->setPath($this->filePath);
+//            try {
+            $youtubeDownloader->download();
+//            } catch (YoutubeException $e) {
+//                if ($e->getMessage() === 'An error occurred when downloading video') {
+//                    $this->download($videoId);
+//                }
+//            }
+
+            $this->activeFile->save();
         }
 
-        return ['fileName' => $file->file_name, 'filePath' => $file->file_path];
+        return ['fileName' => $this->activeFile->file_name, 'filePath' => $this->activeFile->file_path];
     }
 
     public function getArray($stdClass)
