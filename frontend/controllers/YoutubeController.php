@@ -15,9 +15,12 @@ class YoutubeController extends Controller
         if ($search = \Yii::$app->request->getQueryParam('search')) {
             $youtubeService = new YoutubeService();
 
-            $youtubeService->search($search);
+            $results = $youtubeService->search($search);
         }
 
-        return $this->render('search', ['search' => $search ?? null]);
+        return $this->render('search', [
+            'search' => $search ?? null,
+            'results' => $results ?? [],
+        ]);
     }
 }
