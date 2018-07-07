@@ -7,5 +7,8 @@ use yii\base\Component;
 
 class YoutubeService extends Component
 {
-
+    public function search()
+    {
+        YoutubeDownloader::getItags();
+    }
 }
