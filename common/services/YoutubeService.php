@@ -59,13 +59,14 @@ class YoutubeService extends Component
 
 
             $youtubeDownloader->setPath($this->filePath);
-//            try {
-            $youtubeDownloader->download();
-//            } catch (YoutubeException $e) {
-//                if ($e->getMessage() === 'An error occurred when downloading video') {
-//                    $this->download($videoId);
-//                }
-//            }
+            try {
+                $youtubeDownloader->download();
+            } catch (YoutubeException $e) {
+                if ($e->getMessage() === 'An error occurred when downloading video') {
+                    \Yii::error('Google 403');
+                    $this->download($videoId);
+                }
+            }
 
             $this->activeFile->save();
         }
