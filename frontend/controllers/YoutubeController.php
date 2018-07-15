@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\services\YoutubeService;
+use Faker\Provider\Uuid;
+use yii\base\InvalidArgumentException;
 use yii\web\Controller;
 
 class YoutubeController extends Controller
@@ -22,5 +24,20 @@ class YoutubeController extends Controller
             'search' => $search ?? null,
             'results' => $results ?? [],
         ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function actionDownload()
+    {
+        if (!$videoId = \Yii::$app->request->getQueryParam('videoId')) {
+            throw new InvalidArgumentException('Sorry, it would appears this video cannot be downloaded');
+        }
+
+        $youtubeService = new YoutubeService();
+        $file = $youtubeService->download($videoId);
+
+        \Yii::$app->response->sendFile(\Yii::getAlias('@files') . '/'.$file['filePath'], $file['fileName']);
     }
 }

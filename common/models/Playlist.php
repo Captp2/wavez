@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\queries\ActiveQuery;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 
@@ -34,6 +35,15 @@ class Playlist extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTracks(): \yii\db\ActiveQuery
+    {
+        return $this->hasMany(Track::class, ['id' => 'track_id'])
+            ->viaTable('playlist_track', ['playlist_id' => 'id']);
     }
 
     /**
